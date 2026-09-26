@@ -6,14 +6,20 @@ import { ReactElement } from 'react';
 
 type NavbarProps = {
   userName: string;
+  setShowWelcome: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function NavbarComponent({ userName }: NavbarProps): ReactElement {
+export default function NavbarComponent({ userName, setShowWelcome }: NavbarProps): ReactElement {
   return (
     <nav className="flex items-center justify-between px-4 py-3 sm:px-6">
       <Image src={logo} alt="BudgetApp Lite" className="h-auto w-40 sm:w-48" priority />
 
-      <div className="flex items-center gap-1">
+      <div
+        className="flex items-center gap-1"
+        onClick={() => {
+          setShowWelcome(true);
+        }}
+      >
         <Typography
           component="span"
           sx={{

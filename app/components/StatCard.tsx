@@ -12,8 +12,13 @@ export default function StatCardComponent({
   icon: Icon,
   variant,
 }: StatCardType): React.ReactElement {
+  const color = amount < 70 ? '#22c55e' : '#c52238';
+
   return (
     <Box
+      onClick={(title) => {
+        console.log(title);
+      }}
       sx={{
         backgroundColor: '#ffffff',
         border: '1px solid',
@@ -64,6 +69,9 @@ export default function StatCardComponent({
             mt: 2,
             height: 8,
             borderRadius: 5,
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: color,
+            },
           }}
         />
       )}

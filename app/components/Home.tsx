@@ -1,7 +1,7 @@
 'use client';
 
 // react
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // components
 import NavbarComponent from './Navbar';
@@ -15,10 +15,6 @@ import { ExpenseDataType } from '../types/expenseType';
 import { BudgetAppData } from '../types/budgetAppType';
 
 const getStoredData = (): BudgetAppData | null => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
   const storedData = localStorage.getItem('budgetAppData');
 
   if (!storedData) {
@@ -29,13 +25,12 @@ const getStoredData = (): BudgetAppData | null => {
 };
 
 export default function HomeComponent() {
-  const [storedData] = useState<BudgetAppData | null>(() => getStoredData());
+  const [userName, setUserName] = useState('');
+  const [userWage, setUserWage] = useState(0);
+  const [expenseData, setExpenseData] = useState<ExpenseDataType[]>([]);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  const [userName, setUserName] = useState(storedData?.userName ?? '');
-  const [userWage, setUserWage] = useState(storedData?.userWage ?? 0);
-  const [showWelcome, setShowWelcome] = useState(!storedData);
-
-  const [expenseData, setExpenseData] = useState<ExpenseDataType[]>(storedData?.expenses ?? []);
   const totalExpenseAmount = expenseData.reduce((total, expense) => {
     return total + expense.amount;
   }, 0);
@@ -62,9 +57,26 @@ export default function HomeComponent() {
     setShowWelcome(false);
   };
 
-  // Save whenever our app data changes
+  // Load saved data after the component mounts
   useEffect(() => {
-    if (!userName) {
+    const storedData = getStoredData();
+
+    queueMicrotask(() => {
+      if (storedData) {
+        setUserName(storedData.userName ?? '');
+        setUserWage(storedData.userWage ?? 0);
+        setExpenseData(storedData.expenses ?? []);
+      } else {
+        setShowWelcome(true);
+      }
+
+      setIsLoaded(true);
+    });
+  }, []);
+
+  // Save whenever app data changes
+  useEffect(() => {
+    if (!isLoaded || !userName) {
       return;
     }
 
@@ -75,18 +87,27 @@ export default function HomeComponent() {
     };
 
     localStorage.setItem('budgetAppData', JSON.stringify(data));
-  }, [userName, userWage, expenseData]);
+  }, [userName, userWage, expenseData, isLoaded]);
+
+  // Prevent server/client hydration mismatch
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <>
       <WelcomeDialog open={showWelcome} onSave={handleUserSetup} />
-      <NavbarComponent userName={userName} />
+
+      <NavbarComponent userName={userName} setShowWelcome={setShowWelcome} />
+
       <HeaderComponent
         totalExpenseAmount={totalExpenseAmount}
         userWage={userWage}
         remainingBudget={remainingBudget}
       />
+
       <ExpenseFormComponent onAddExpense={handleAddExpense} />
+
       <TableComponent expenseData={expenseData} onDeleteExpense={handleDeleteExpense} />
     </>
   );

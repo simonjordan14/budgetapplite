@@ -18,6 +18,8 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps): ReactEl
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    if (title === '') {
+    }
 
     onAddExpense(title, Number(amount));
 
@@ -35,6 +37,7 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps): ReactEl
         borderColor: 'grey.200',
         borderRadius: 3,
         p: 3,
+        mt: 3,
       }}
     >
       <Typography
@@ -79,18 +82,8 @@ export default function ExpenseForm({ onAddExpense }: ExpenseFormProps): ReactEl
           fullWidth
         />
 
-        <TextField
-          label="Date"
-          type="date"
-          slotProps={{
-            inputLabel: {
-              shrink: true,
-            },
-          }}
-          fullWidth
-        />
-
         <Button
+          disabled={!title}
           type="submit"
           variant="contained"
           sx={{

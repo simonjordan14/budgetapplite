@@ -31,11 +31,6 @@ export default function ExpenseTable({
       valueFormatter: (value: number) => `€${value.toFixed(2)}`,
     },
     {
-      field: 'date',
-      headerName: 'Date',
-      width: 160,
-    },
-    {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
@@ -61,6 +56,18 @@ export default function ExpenseTable({
         border: '1px solid',
         borderColor: 'grey.200',
         borderRadius: 3,
+
+        // responsive spacing
+        px: {
+          xs: 1,
+          sm: 2,
+          md: 5,
+        },
+        mt: {
+          xs: 2,
+          sm: 3,
+          md: 5,
+        },
 
         '& .MuiDataGrid-columnHeaders': {
           backgroundColor: 'grey.50',

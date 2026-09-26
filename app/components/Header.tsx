@@ -56,7 +56,7 @@ export default function HeaderComponent({
   ];
 
   return (
-    <div className="flex flex-row justify-around">
+    <div className="flex flex-row justify-around sticky">
       {cardData.map((card) => (
         <StatCardComponent
           key={card.title}
