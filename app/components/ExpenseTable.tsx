@@ -22,7 +22,7 @@ export default function ExpenseTable({
       field: 'title',
       headerName: 'Expense',
       flex: 1,
-      minWidth: 180,
+      minWidth: 100,
     },
     {
       field: 'amount',
